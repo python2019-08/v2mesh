@@ -1,0 +1,407 @@
+
+```sh
+$ python ./src/test/check_camera_info.py
+
+Reconstruction:
+	num_reg_images = 78
+	num_cameras = 78
+	num_points3D = 13589
+	num_observations = 253307
+	mean_track_length = 18.6406
+	mean_observations_per_image = 3247.53
+	mean_reprojection_error = 0.965597
+
+  
+  
+Total cameras: 78
+Camera ID: 402
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.71964292e+02 9.60000000e+02 5.40000000e+02 4.17723431e-02]
+Camera ID: 401
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.66052303e+02 9.60000000e+02 5.40000000e+02 4.36448392e-02]
+Camera ID: 400
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.59311394e+02 9.60000000e+02 5.40000000e+02 4.56824844e-02]
+Camera ID: 399
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.52103074e+02 9.60000000e+02 5.40000000e+02 4.74015065e-02]
+Camera ID: 398
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.44163915e+02 9.60000000e+02 5.40000000e+02 4.95908137e-02]
+Camera ID: 397
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.3603786e+02 9.6000000e+02 5.4000000e+02 5.1185767e-02]
+Camera ID: 396
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.28284922e+02 9.60000000e+02 5.40000000e+02 5.33140573e-02]
+Camera ID: 395
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.21504735e+02 9.60000000e+02 5.40000000e+02 5.47556944e-02]
+Camera ID: 394
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.15125886e+02 9.60000000e+02 5.40000000e+02 5.71663861e-02]
+Camera ID: 393
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.08220771e+02 9.60000000e+02 5.40000000e+02 5.98162296e-02]
+Camera ID: 392
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [6.01625840e+02 9.60000000e+02 5.40000000e+02 6.18543241e-02]
+Camera ID: 391
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.94817129e+02 9.60000000e+02 5.40000000e+02 6.35603804e-02]
+Camera ID: 390
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.87709196e+02 9.60000000e+02 5.40000000e+02 6.49174820e-02]
+Camera ID: 389
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.80392706e+02 9.60000000e+02 5.40000000e+02 6.56315717e-02]
+Camera ID: 388
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.72674251e+02 9.60000000e+02 5.40000000e+02 6.57542768e-02]
+Camera ID: 387
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.64567349e+02 9.60000000e+02 5.40000000e+02 6.56477923e-02]
+Camera ID: 386
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.56308683e+02 9.60000000e+02 5.40000000e+02 6.49601104e-02]
+Camera ID: 385
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.47743698e+02 9.60000000e+02 5.40000000e+02 6.47717899e-02]
+Camera ID: 384
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.39560471e+02 9.60000000e+02 5.40000000e+02 6.37763978e-02]
+Camera ID: 353
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.50599848e+02 9.60000000e+02 5.40000000e+02 4.05155153e-02]
+Camera ID: 352
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.46195329e+02 9.60000000e+02 5.40000000e+02 3.99239909e-02]
+Camera ID: 351
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.4141740e+02 9.6000000e+02 5.4000000e+02 3.9628391e-02]
+Camera ID: 350
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.36618295e+02 9.60000000e+02 5.40000000e+02 3.91534816e-02]
+Camera ID: 349
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.31609188e+02 9.60000000e+02 5.40000000e+02 3.82278461e-02]
+Camera ID: 348
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.26440789e+02 9.60000000e+02 5.40000000e+02 3.82220844e-02]
+Camera ID: 347
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.21041768e+02 9.60000000e+02 5.40000000e+02 3.74225266e-02]
+Camera ID: 346
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.15708249e+02 9.60000000e+02 5.40000000e+02 3.85400558e-02]
+Camera ID: 345
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.10762207e+02 9.60000000e+02 5.40000000e+02 3.92679454e-02]
+Camera ID: 344
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.06420610e+02 9.60000000e+02 5.40000000e+02 3.90148558e-02]
+Camera ID: 343
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.02162398e+02 9.60000000e+02 5.40000000e+02 3.91966232e-02]
+Camera ID: 342
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.98067751e+02 9.60000000e+02 5.40000000e+02 3.92718340e-02]
+Camera ID: 341
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.94167803e+02 9.60000000e+02 5.40000000e+02 3.92180648e-02]
+Camera ID: 340
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.90464320e+02 9.60000000e+02 5.40000000e+02 3.92699065e-02]
+Camera ID: 339
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.86511985e+02 9.60000000e+02 5.40000000e+02 3.94118159e-02]
+Camera ID: 338
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.82412752e+02 9.60000000e+02 5.40000000e+02 3.92314350e-02]
+Camera ID: 325
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.32901989e+02 9.60000000e+02 5.40000000e+02 3.66897193e-02]
+Camera ID: 326
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.36838713e+02 9.60000000e+02 5.40000000e+02 3.66128347e-02]
+Camera ID: 327
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.40737164e+02 9.60000000e+02 5.40000000e+02 3.66322738e-02]
+Camera ID: 328
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.44290861e+02 9.60000000e+02 5.40000000e+02 3.65881862e-02]
+Camera ID: 329
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.47692756e+02 9.60000000e+02 5.40000000e+02 3.68931751e-02]
+Camera ID: 330
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.51000860e+02 9.60000000e+02 5.40000000e+02 3.69450361e-02]
+Camera ID: 331
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.54399346e+02 9.60000000e+02 5.40000000e+02 3.72587202e-02]
+Camera ID: 332
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.57768984e+02 9.60000000e+02 5.40000000e+02 3.76082858e-02]
+Camera ID: 333
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.61463332e+02 9.60000000e+02 5.40000000e+02 3.78609914e-02]
+Camera ID: 334
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.65377360e+02 9.60000000e+02 5.40000000e+02 3.81730489e-02]
+Camera ID: 335
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.69482465e+02 9.60000000e+02 5.40000000e+02 3.85297951e-02]
+Camera ID: 336
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.73879645e+02 9.60000000e+02 5.40000000e+02 3.89031068e-02]
+Camera ID: 337
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.78066844e+02 9.60000000e+02 5.40000000e+02 3.90834835e-02]
+Camera ID: 354
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.55168982e+02 9.60000000e+02 5.40000000e+02 4.13003116e-02]
+Camera ID: 355
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.59814459e+02 9.60000000e+02 5.40000000e+02 4.19859280e-02]
+Camera ID: 356
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.64437630e+02 9.60000000e+02 5.40000000e+02 4.30313188e-02]
+Camera ID: 357
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.68929984e+02 9.60000000e+02 5.40000000e+02 4.39205150e-02]
+Camera ID: 358
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.73895711e+02 9.60000000e+02 5.40000000e+02 4.51084183e-02]
+Camera ID: 359
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.79301797e+02 9.60000000e+02 5.40000000e+02 4.70195415e-02]
+Camera ID: 360
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.85372325e+02 9.60000000e+02 5.40000000e+02 4.82704191e-02]
+Camera ID: 361
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.91398892e+02 9.60000000e+02 5.40000000e+02 4.95425113e-02]
+Camera ID: 362
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [3.97123979e+02 9.60000000e+02 5.40000000e+02 5.05407095e-02]
+Camera ID: 363
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.02781295e+02 9.60000000e+02 5.40000000e+02 5.15538139e-02]
+Camera ID: 364
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.08209684e+02 9.60000000e+02 5.40000000e+02 5.22412447e-02]
+Camera ID: 365
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.13620289e+02 9.60000000e+02 5.40000000e+02 5.31249360e-02]
+Camera ID: 366
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.18990733e+02 9.60000000e+02 5.40000000e+02 5.39280521e-02]
+Camera ID: 367
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.24628170e+02 9.60000000e+02 5.40000000e+02 5.42258085e-02]
+Camera ID: 368
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.30423836e+02 9.60000000e+02 5.40000000e+02 5.48579666e-02]
+Camera ID: 369
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.36257774e+02 9.60000000e+02 5.40000000e+02 5.50699105e-02]
+Camera ID: 370
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.42128466e+02 9.60000000e+02 5.40000000e+02 5.53932490e-02]
+Camera ID: 371
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.48727716e+02 9.60000000e+02 5.40000000e+02 5.50422807e-02]
+Camera ID: 372
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.55639461e+02 9.60000000e+02 5.40000000e+02 5.51598566e-02]
+Camera ID: 373
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.63192810e+02 9.60000000e+02 5.40000000e+02 5.65258969e-02]
+Camera ID: 374
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.70559046e+02 9.60000000e+02 5.40000000e+02 5.73776121e-02]
+Camera ID: 375
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.77392550e+02 9.60000000e+02 5.40000000e+02 5.82125717e-02]
+Camera ID: 376
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.84204592e+02 9.60000000e+02 5.40000000e+02 5.84757393e-02]
+Camera ID: 377
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.90874958e+02 9.60000000e+02 5.40000000e+02 5.86156661e-02]
+Camera ID: 378
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [4.97318133e+02 9.60000000e+02 5.40000000e+02 5.92183531e-02]
+Camera ID: 379
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.03708498e+02 9.60000000e+02 5.40000000e+02 5.90814684e-02]
+Camera ID: 380
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.10333122e+02 9.60000000e+02 5.40000000e+02 5.93171400e-02]
+Camera ID: 381
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.17177427e+02 9.60000000e+02 5.40000000e+02 5.99987799e-02]
+Camera ID: 382
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.24215335e+02 9.60000000e+02 5.40000000e+02 6.10579789e-02]
+Camera ID: 383
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [5.31726202e+02 9.60000000e+02 5.40000000e+02 6.20810811e-02]
+```

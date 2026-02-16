@@ -1,0 +1,42 @@
+
+```sh
+$ python ./tools/check_camera_info/check_camera_info.py
+****************************************
+Reconstruction:
+	num_rigs = 1
+	num_cameras = 1
+	num_frames = 622
+	num_reg_frames = 622
+	num_images = 622
+	num_points3D = 103530
+	num_observations = 2173704
+	mean_track_length = 20.9959
+	mean_observations_per_image = 3494.7
+	mean_reprojection_error = 1.35189
+dat/colmap_workspace/sparse/0, Total cameras: 1
+Camera ID: 1
+  Model Name: SIMPLE_RADIAL
+  Model ID: 2
+  Width/Height: 1920x1080
+  Parameters: [2.99622022e+02 9.60000000e+02 5.40000000e+02 8.21410284e-03]
+dat/colmap_workspace/sparse/0, 成功注册的图像数: 622
+****************************************
+Reconstruction:
+	num_rigs = 1
+	num_cameras = 1
+	num_frames = 622
+	num_reg_frames = 622
+	num_images = 622
+	num_points3D = 103530
+	num_observations = 2173704
+	mean_track_length = 20.9959
+	mean_observations_per_image = 3494.7
+	mean_reprojection_error = 1.35189
+dat/colmap_workspace/sparse_undistort/sparse, Total cameras: 1
+Camera ID: 1
+  Model Name: PINHOLE
+  Model ID: 1
+  Width/Height: 1755x987
+  Parameters: [299.62202246 299.62202246 877.5        493.5       ]
+dat/colmap_workspace/sparse_undistort/sparse, 成功注册的图像数: 622
+```

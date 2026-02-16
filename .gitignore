@@ -1,0 +1,7 @@
+3rd/
+dat/*.mov
+
+src/__pycache__/
+t1.txt
+t2.txt
+tmp*

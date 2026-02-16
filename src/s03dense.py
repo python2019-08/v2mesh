@@ -1,0 +1,272 @@
+# 使用 OpenMVS 对 COLMAP 的稀疏重建结果进行稠密重建和网格化。
+import subprocess
+import shutil
+from pathlib import Path
+
+def run_command(command, cwd):
+    """
+    执行一个 shell 命令并处理可能的错误。
+    :param command: 要执行的命令列表。
+    :param cwd: 命令执行的工作目录。
+    """
+    print(f"\n[执行命令] {' '.join(command)}")
+    try:
+        # 使用 Popen 实时打印输出
+        process = subprocess.Popen(command, 
+                                   cwd=cwd, 
+                                   stdout=subprocess.PIPE, 
+                                   stderr=subprocess.STDOUT, 
+                                   text=True, 
+                                   bufsize=1)
+        for line in iter(process.stdout.readline, ''):
+            print(line, end='')
+        process.wait()
+        
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(process.returncode, command)
+        
+        print(f"[成功] 命令 {' '.join(command)} 执行完毕。")
+    except FileNotFoundError:
+        print(f"错误: 命令 '{command[0]}' 未找到。")
+        print("请确保 OpenMVS 的可执行文件目录已添加到系统的 PATH 环境变量中。")
+        exit(1)
+    except subprocess.CalledProcessError as e:
+        print(f"错误: 命令 {' '.join(command)} 执行失败，返回码 {e.returncode}。")
+        exit(1)
+
+# project_root = Path(__file__).resolve().parent.parent
+class DenseReconstruction:       
+    def __init__(self, project_root: Path, dat_root: Path):
+        self._projectRoot = project_root
+        self._datRoot = dat_root
+        
+        if not self._projectRoot.exists():
+            print(f"错误：未找到 文件目录于 {self._projectRoot}") 
+            exit(-1000)  
+
+
+        self._openmvs_binDir = self._projectRoot / "3rd/openMVS/make/bin"
+        if not self._openmvs_binDir.exists():
+            print(f"错误：未找到 OpenMVS 可执行文件目录于 {self._openmvs_binDir}")
+            print("请先成功编译 OpenMVS。")
+            exit(-1001)
+
+        self._mvsWorkspace = self._datRoot / "mvs" 
+        self._sceneMvs_file = self._mvsWorkspace / "scene.mvs"
+        # 定义稠密点云文件的路径
+        self._sceneDenseMvs_file = self._mvsWorkspace / "scene_dense.mvs"
+        # 
+        self._mesh_file = self._mvsWorkspace / "scene_dense_mesh.mvs"
+        
+    #=================================
+    def _init_mvsWorkspace(self):
+        # OpenMVS workspace   # 清理并创建 OpenMVS 工作区 
+        if self._mvsWorkspace.exists():
+            print(f"清理已存在的 OpenMVS 工作区: {self._mvsWorkspace}")
+            shutil.rmtree(self._mvsWorkspace)
+        print(f"创建新的 OpenMVS 工作区: {self._mvsWorkspace}")
+        self._mvsWorkspace.mkdir(parents=True)
+
+    # ================================
+    def step1_makeMvs(self) ->None:
+        """
+        
+        """  
+        print("step1_makeMvs().....................")           
+        # COLMAP 工作区 (包含稀疏重建结果)
+        colmap_workspace = self._datRoot / "colmap_workspace/sparse_undistort"
+        # 检查 COLMAP 的输出是否存在
+        if not (colmap_workspace).exists():
+            print(f"错误：未找到 COLMAP 稀疏重建结果于 {colmap_workspace}")
+            print("请先成功运行 s02_run_sfm.py 脚本。")
+            exit( -1002)
+
+        self._init_mvsWorkspace()
+
+
+ 
+
+        # 1. 将 COLMAP 格式转换为 OpenMVS 格式
+        # -----------------------------------------
+        # InterfaceCOLMAP 工具读取 COLMAP 的输出并生成一个 .mvs 文件，
+        # 该文件包含了所有相机、位姿和稀疏点云信息。
+        print("\n[1/4] 转换 COLMAP 模型到 OpenMVS 格式...")
+        cmd_interface = [
+            str(self._openmvs_binDir / "InterfaceCOLMAP"),
+            "--input-file",   str(colmap_workspace),
+            "--image-folder", str(colmap_workspace / "images"),
+            "--output-file",  str(self._sceneMvs_file)        
+        ]
+        run_command(cmd_interface, self._mvsWorkspace)
+
+    # ====================================
+    def check_mvsWorkspace(self):
+        # OpenMVS 工作区 
+        if not self._mvsWorkspace.exists():
+            print(f"请先创建 OpenMVS 工作区: {self._mvsWorkspace}")  
+            exit(-1011)       
+                 
+    # ====================================
+    def check_sceneMvs_file(self):
+        # 检查 OpenMVS 工作区
+        if not self._sceneMvs_file.exists():
+            print(f"请先创建 OpenMVS 场景文件: {self._sceneMvs_file}") 
+            exit(-1012)                         
+
+    # =====================================
+    def step2x1_makeDmap(self):
+        """
+        生成 *.dmap 
+        """ 
+        print("step2x1_makeDmap().....................")   
+        self.check_mvsWorkspace()   
+        self.check_sceneMvs_file()
+        # 2. 稠密点云重建 (DensifyPointCloud)
+        # ------------------------------------
+        # 这是 MVS 的核心步骤，计算量非常大。
+        # 它会为场景生成一个密集的 3D 点云。
+        if True :        
+            print("\n[2.1/4] 正在生成dmap ...")
+
+            cmd_createDmap = [
+                str(self._openmvs_binDir / "DensifyPointCloud"),
+                "--input-file", str(self._sceneMvs_file),
+                "--working-folder", str(self._mvsWorkspace),
+                "--resolution-level", "2",
+                "--number-views", "5",
+                # --fusion-mode=1 强制 OpenMVS 跳过读取和融合阶段，只进行 CUDA 深度图计算。
+                "--fusion-mode", "1",
+                # "--iters", "3" ,     "--geometric-iters", "0",      "--sub-scene-area", "1000",
+                "--max-threads", "8"
+            ]
+            run_command(cmd_createDmap, self._mvsWorkspace)
+  
+    # =========================================
+
+    def step2x2_densifyPointCloud(self):
+        """
+        既然 .dmap 文件已经生成在 mvs_ws 目录中，稠密重建最耗时的“计算”阶段已经完成了。
+        """    
+        print("step2x2_densifyPointCloud().....................") 
+        self.check_mvsWorkspace()   
+
+        self.check_sceneMvs_file()           
+        # 2. 稠密点云重建 (DensifyPointCloud)
+        # ------------------------------------
+        # 这是 MVS 的核心步骤，计算量非常大。
+        # 它会为场景生成一个密集的 3D 点云。
+        if True :
+            # scene_dense.mvs 的本质：它只是 scene.mvs 加上了「稠密点云数据」的索引。
+            # print("\n[2.2/4] 正在生成稠密点云 (此步骤可能需要很长时间)...")
+            # cmd_densify = [
+            #     str(openmvs_bin_dir / "DensifyPointCloud"),
+            #     "--input-file", str(self._sceneMvs_file),
+            #     "--working-folder", str(self._mvsWorkspace),
+            #     "--resolution-level", "2",
+            #     "--number-views", "5",
+            #     "--iters", "3" ,
+            #     "--geometric-iters", "0",
+            #     "--sub-scene-area", "1000",
+            #     "--max-threads", "8"
+            # ]
+            # run_command(cmd_densify, self._mvsWorkspace)    
+            # -------------------------------------------
+            # 如果一定要生成 scene_dense.mvs（用于备份）
+            print("\n[2.2/4] 正在生成稠密点云 ...")
+
+
+            cmd_densify = [
+                str(self._openmvs_binDir / "DensifyPointCloud"),
+                "--input-file", str(self._sceneMvs_file),
+                "--working-folder", str(self._mvsWorkspace),
+                # --fusion-mode 2：只进行融合（Fusion），不重新计算深度图。这通常只需要几十秒。
+                "--fusion-mode", "2" ,
+                "--output-file", str(self._sceneDenseMvs_file)
+            ]
+            run_command(cmd_densify, self._mvsWorkspace)   
+  
+    def check_sceneDenseMvs_file(self):
+        # 检查 OpenMVS 工作区
+        if not self._sceneDenseMvs_file.exists():
+            print(f"请先创建 OpenMVS 稠密场景文件: {self._sceneDenseMvs_file}") 
+            exit(-1013)                             
+
+    def step3_reconstructMesh(self):
+        """
+        使用 OpenMVS 对 COLMAP 的稀疏重建结果进行稠密重建和网格化。
+        """   
+        print( "step3_reconstructMesh()....................." )   
+        self.check_mvsWorkspace()
+        self.check_sceneMvs_file()                 
+        # 3. 网格重建 (ReconstructMesh)
+        # --------------------------------
+        # 
+        # ----使用泊松表面重建算法从稠密点云创建 3D 网格。    
+        # print("\n[3/4] 正在从稠密点云重建网格...")
+        # self.check_sceneDenseMvs_file()
+        # cmd_reconstruct = [
+        #     str(openmvs_bin_dir / "ReconstructMesh"),
+        #     "--input-file", str(self._sceneDenseMvs_file),
+        #     "--working-folder", str(self._mvsWorkspace)
+        # ]
+        # run_command(cmd_reconstruct, self._mvsWorkspace)
+        # 
+        # ----直接从稀疏点云重建网格 
+        print("\n[3/4] 正在从稀疏点云融合深度图并重建网格...")
+     
+        cmd_reconstruct = [
+            str(self._openmvs_binDir / "ReconstructMesh"),
+            "--input-file",     str(self._sceneMvs_file),
+            "--working-folder", str(self._mvsWorkspace),
+            "--output-file",    str(self._mesh_file),
+            "--min-point-distance", "0"
+        ]    
+        run_command(cmd_reconstruct, self._mvsWorkspace)
+ 
+    # ==================================================
+    def check_mesh_file(self):
+        # 检查 OpenMVS 工作区
+        if not self._mesh_file.exists():
+            print(f"请先创建 OpenMVS 网格文件: {self._mesh_file}") 
+            exit(-1015)     
+
+    # ==================================================
+    def step4_textureMesh(self):
+        """
+        使用 OpenMVS 对 COLMAP 的稀疏重建结果进行稠密重建和网格化。
+        """              
+        print("\nstep4_textureMesh().....................")
+        self.check_mvsWorkspace()
+        self.check_mesh_file()
+
+        # 4. 网格纹理化 (TextureMesh)
+        # ----------------------------
+        # 为 3D 网格生成纹理贴图，使其看起来更真实。
+        # 输出是一个标准的 .obj 文件，可以在大多数 3D 查看器中打开。
+        print("\n[4/4] 正在为网格生成纹理...")
+        cmd_texture = [
+            str(self._openmvs_binDir / "TextureMesh"),
+            "--input-file", str(self._mesh_file),
+            "--working-folder", str(self._mvsWorkspace),
+            # 可选：导出为 obj 格式
+            "--export-type", "obj" 
+        ]
+        run_command(cmd_texture, self._mvsWorkspace)
+
+        final_model_path = self._mvsWorkspace / "scene_dense_mesh_textured.obj"
+        print(f"\n处理完成！")
+        print(f"最终的带纹理三维模型已保存至: {final_model_path}")    
+
+if __name__ == "__main__":
+    project_rootPathStr = "/home/abner/Documents/jobs/task/task-blender/task03ai0img0modeling/"
+    project_root = Path(project_rootPathStr).resolve()
+
+    dat_rootPathStr = "~/0model"
+    dat_root = Path(dat_rootPathStr).resolve()
+
+    drObj = DenseReconstruction()
+    drObj.step1_makeMvs(project_root, dat_root)
+    drObj.step2x1_makeDmap(project_root, dat_root)
+    drObj.step2x2_densifyPointCloud(project_root, dat_root)
+    drObj.step3_reconstructMesh( )
+    drObj.step4_textureMesh( )
