@@ -46,18 +46,33 @@ sudo apt-get -y install libopencv-dev
 # CGAL
 sudo apt-get -y install libcgal-dev libcgal-qt5-dev
 
+#  OpenMVS v2.4.0 引入了对 JPEG XL (libjxl) 图像格式的支持
+sudo apt-get install libjxl-dev
+
 # VCGLib
 git clone https://github.com/cdcseacave/VCG.git vcglib
 
+# nanoflann
+git clone https://github.com/jlblancoc/nanoflann.git
+cd nanoflann
+cmake -S . -B build
+sudo cmake --install build
+
+# glfw3
+sudo apt install -y libglfw3-dev libglfw3
+
+ 
+# 
 # -----------------OpenMVS-----------------
 git clone --recurse-submodules https://github.com/cdcseacave/openMVS.git
-mv vcglib ./openMVS/libs
+mv vcglib ./openMVS/3rd
 cd openMVS
-git checkout v2.3.0
+git checkout  v2.4.0 ## v2.3.0  
 git submodule update --init --recursive
-mkdir make && cd make
-cmake ..  -DCMAKE_PREFIX_PATH=/usr/lib/x86_64-linux-gnu -DCMAKE_BUILD_TYPE=Release -DOpenMVS_USE_CURL=ON -DVCG_ROOT=../libs/vcglib -DCMAKE_CXX_FLAGS="-w"
-cmake --build . -j8
+mkdir make02 && cd make02
+export VCG_ROOT=/home/abner/Documents/jobs/task/blender/task03v2mesh/3rd/openMVS/3rd/vcglib
+cmake ..  --debug-find -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++  -DCMAKE_C_CREATE_STATIC_LIBRARY="<CMAKE_AR> qc <TARGET> <LINK_FLAGS> <OBJECTS>" -DCMAKE_PREFIX_PATH=/usr/lib/x86_64-linux-gnu -DCMAKE_BUILD_TYPE=Release  -DVCG_ROOT="${VCG_ROOT}"  -DBUILD_SHARED_LIBS=OFF  -DCMAKE_CXX_FLAGS="-I/usr/include/python3.12 -I/usr/include/x86_64-linux-gnu/python3.12  -I${VCG_ROOT}  -w"  -DCMAKE_CXX_STANDARD=17 -DCMAKE_C_STANDARD=99
+cmake --build . -j12
 ```
  ![openmvg_openmvs10.png](openmvg_openmvs10.png)
 （如上图所示，编译成功。）
@@ -215,7 +230,7 @@ build 文件夹下的 bin 里面就是编译生成的可执行文件就是我们
 
 ## 4 OpenMVG+OpenMVS 三维重建
  可以通过如图的方式创建文件夹，bin 文件夹就是 OpenMVS 编译生成的，将照片放入 images 文件夹中
- ![openmvg_openmvs](openmvg_openmvs.png)
+ ![openmvg_openmvs](openmvg_openmvs00.png)
 
   下面就我们就可以对数据集进行三维重建。我们可以将这些命令写入一个sh 脚本，这样方便点
 ```sh        

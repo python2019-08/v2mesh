@@ -1,5 +1,6 @@
 3rd/
 dat/*.mov
+dat/*.mp4
 
 src/__pycache__/
 t1.txt

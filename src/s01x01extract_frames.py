@@ -12,11 +12,12 @@ def extractVideoFrames(aDatRoot: Path):
     """
     # --- 配置 ---
     # 输入视频文件路径 (相对于项目根目录)
-    input_video_rel = "2026-0118-143016.mov"
+    # input_video_rel = "e01.mp4"   #"20260118-143016.mov"
+    input_video_rel = "20260118-143016.mov"
     input_video = aDatRoot / input_video_rel
 
     # 输出关键帧的目录 (相对于项目根目录)
-    # output_dir_rel = "dat/frames_0"
+    # output_dir_rel = "frames_0"
     output_dir_rel = "frames"
     output_dir = aDatRoot / output_dir_rel
  
@@ -58,7 +59,7 @@ def extractVideoFrames(aDatRoot: Path):
     command = [
         "ffmpeg",
         "-i", str(input_video), 
-        "-r", "4", 
+        "-r", "5", 
         f"{output_dir}/frame_%04d.jpg"
     ]
 

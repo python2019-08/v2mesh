@@ -45,7 +45,7 @@ class DenseReconstruction:
             exit(-1000)  
 
 
-        self._openmvs_binDir = self._projectRoot / "3rd/openMVS/make/bin"
+        self._openmvs_binDir = self._projectRoot / "3rd/openMVS/make02/bin"
         if not self._openmvs_binDir.exists():
             print(f"错误：未找到 OpenMVS 可执行文件目录于 {self._openmvs_binDir}")
             print("请先成功编译 OpenMVS。")
@@ -56,7 +56,8 @@ class DenseReconstruction:
         # 定义稠密点云文件的路径
         self._sceneDenseMvs_file = self._mvsWorkspace / "scene_dense.mvs"
         # 
-        self._mesh_file = self._mvsWorkspace / "scene_dense_mesh.mvs"
+        self._sceneDenseMesh_file = self._mvsWorkspace / "scene_dense_mesh.ply"
+        self._scene_dense_mesh_textured_file = self._mvsWorkspace / "scene_dense_mesh_textured.mvs"
         
     #=================================
     def _init_mvsWorkspace(self):
@@ -131,13 +132,24 @@ class DenseReconstruction:
             cmd_createDmap = [
                 str(self._openmvs_binDir / "DensifyPointCloud"),
                 "--input-file", str(self._sceneMvs_file),
-                "--working-folder", str(self._mvsWorkspace),
-                "--resolution-level", "2",
-                "--number-views", "5",
-                # --fusion-mode=1 强制 OpenMVS 跳过读取和融合阶段，只进行 CUDA 深度图计算。
-                "--fusion-mode", "1",
-                # "--iters", "3" ,     "--geometric-iters", "0",      "--sub-scene-area", "1000",
-                "--max-threads", "8"
+                "--output-file", str(self._sceneDenseMvs_file),
+                "--working-folder", str(self._mvsWorkspace),                
+                "--resolution-level","2",         # 核心：图像缩到1/4，降低内存
+                "--max-resolution","480",        # 深度图最大分辨率480p
+                "--min-resolution","240",        # 深度图最小分辨率240p
+                "--number-views","4",           # 仅用4个视图估计深度（减少计算）
+                "--number-views-fuse","1",      # 最低1个视图融合（适配稀疏点云）
+                "--iters","2",                     # 减少深度匹配迭代次数
+                "--geometric-iters","0",           # 禁用几何一致性迭代（避免溢出）
+                "--estimate-normals","0",          # 禁用法线估计（减少内存）
+                "--estimate-scale","0",            # 禁用尺度估计（减少内存）
+                "--fusion-mode","0",               # 0=深度图+融合（v2.3.0默认，稳定）
+                "--max-threads","2",               # 仅2线程，避免内存竞争
+                "--cuda-device","-2",              # 禁用GPU，强制CPU（核心修复溢出）
+                "--verbosity","1",                 # 低日志级别，减少输出内存占用
+                "--postprocess-dmaps","0",         # 禁用深度图后处理（简化计算）
+                "--filter-point-cloud","0",        # 禁用点云过滤（避免额外计算）
+                "--estimate-colors","1"            # 仅最终估计颜色（减少计算，保留颜色）
             ]
             run_command(cmd_createDmap, self._mvsWorkspace)
   
@@ -155,35 +167,20 @@ class DenseReconstruction:
         # ------------------------------------
         # 这是 MVS 的核心步骤，计算量非常大。
         # 它会为场景生成一个密集的 3D 点云。
-        if True :
-            # scene_dense.mvs 的本质：它只是 scene.mvs 加上了「稠密点云数据」的索引。
-            # print("\n[2.2/4] 正在生成稠密点云 (此步骤可能需要很长时间)...")
-            # cmd_densify = [
-            #     str(openmvs_bin_dir / "DensifyPointCloud"),
-            #     "--input-file", str(self._sceneMvs_file),
-            #     "--working-folder", str(self._mvsWorkspace),
-            #     "--resolution-level", "2",
-            #     "--number-views", "5",
-            #     "--iters", "3" ,
-            #     "--geometric-iters", "0",
-            #     "--sub-scene-area", "1000",
-            #     "--max-threads", "8"
-            # ]
-            # run_command(cmd_densify, self._mvsWorkspace)    
-            # -------------------------------------------
-            # 如果一定要生成 scene_dense.mvs（用于备份）
-            print("\n[2.2/4] 正在生成稠密点云 ...")
-
-
-            cmd_densify = [
-                str(self._openmvs_binDir / "DensifyPointCloud"),
-                "--input-file", str(self._sceneMvs_file),
-                "--working-folder", str(self._mvsWorkspace),
-                # --fusion-mode 2：只进行融合（Fusion），不重新计算深度图。这通常只需要几十秒。
-                "--fusion-mode", "2" ,
-                "--output-file", str(self._sceneDenseMvs_file)
-            ]
-            run_command(cmd_densify, self._mvsWorkspace)   
+        # -----------------------------------
+        # print("\n[2.2/4] 正在生成稠密点云 ...")
+        # cmd_densify = [
+        #     str(self._openmvs_binDir / "DensifyPointCloud"),
+        #     "--input-file", str(self._sceneMvs_file),
+        #     "--working-folder", str(self._mvsWorkspace),
+        #     "--output-file", str(self._sceneDenseMvs_file),
+        #     "--fusion-mode", "0" , # 从fusion-mode=2（高复杂度）降到1（基础融合）
+        #     "--max-resolution", "480",  # 深度图分辨率缩到480p（960x540→480x270）
+        #     "--min-resolution", "240", 
+        #     "--max-threads", "2",  # 极致降低线程数，避免内存竞争
+        #     "--cuda-device", "-2",  # 禁用GPU，改用CPU（GPU易触发缓冲区溢出）               
+        # ]
+        # run_command(cmd_densify, self._mvsWorkspace)   
   
     def check_sceneDenseMvs_file(self):
         # 检查 OpenMVS 工作区
@@ -200,34 +197,38 @@ class DenseReconstruction:
         self.check_sceneMvs_file()                 
         # 3. 网格重建 (ReconstructMesh)
         # --------------------------------
-        # 
-        # ----使用泊松表面重建算法从稠密点云创建 3D 网格。    
-        # print("\n[3/4] 正在从稠密点云重建网格...")
-        # self.check_sceneDenseMvs_file()
-        # cmd_reconstruct = [
-        #     str(openmvs_bin_dir / "ReconstructMesh"),
-        #     "--input-file", str(self._sceneDenseMvs_file),
-        #     "--working-folder", str(self._mvsWorkspace)
-        # ]
-        # run_command(cmd_reconstruct, self._mvsWorkspace)
-        # 
-        # ----直接从稀疏点云重建网格 
-        print("\n[3/4] 正在从稀疏点云融合深度图并重建网格...")
-     
-        cmd_reconstruct = [
-            str(self._openmvs_binDir / "ReconstructMesh"),
-            "--input-file",     str(self._sceneMvs_file),
-            "--working-folder", str(self._mvsWorkspace),
-            "--output-file",    str(self._mesh_file),
-            "--min-point-distance", "0"
-        ]    
-        run_command(cmd_reconstruct, self._mvsWorkspace)
+        if True:
+            # 
+            # ----使用泊松表面重建算法从稠密点云创建 3D 网格。    
+            print("\n[3/4] 正在从稠密点云重建网格...")
+            self.check_sceneDenseMvs_file()
+            cmd_reconstruct = [
+                str(self._openmvs_binDir / "ReconstructMesh"),
+                "--input-file", str(self._sceneDenseMvs_file),
+                "--working-folder", str(self._mvsWorkspace),
+                "--output-file",    str(self._sceneDenseMesh_file),
+                "--min-point-distance", "0"                
+            ]
+            run_command(cmd_reconstruct, self._mvsWorkspace)
+        else:
+            # 
+            # ----直接从稀疏点云重建网格 
+            print("\n[3/4] 正在从稀疏点云融合深度图并重建网格...")
+        
+            cmd_reconstruct = [
+                str(self._openmvs_binDir / "ReconstructMesh"),
+                "--input-file",     str(self._sceneMvs_file),
+                "--working-folder", str(self._mvsWorkspace),
+                "--output-file",    str(self._sceneDenseMesh_file),
+                "--min-point-distance", "0"
+            ]    
+            run_command(cmd_reconstruct, self._mvsWorkspace)
  
     # ==================================================
-    def check_mesh_file(self):
+    def check_sceneDenseMesh_file(self):
         # 检查 OpenMVS 工作区
-        if not self._mesh_file.exists():
-            print(f"请先创建 OpenMVS 网格文件: {self._mesh_file}") 
+        if not self._sceneDenseMesh_file.exists():
+            print(f"请先创建 OpenMVS 网格文件: {self._sceneDenseMesh_file}") 
             exit(-1015)     
 
     # ==================================================
@@ -237,7 +238,7 @@ class DenseReconstruction:
         """              
         print("\nstep4_textureMesh().....................")
         self.check_mvsWorkspace()
-        self.check_mesh_file()
+        self.check_sceneDenseMesh_file()
 
         # 4. 网格纹理化 (TextureMesh)
         # ----------------------------
@@ -246,10 +247,27 @@ class DenseReconstruction:
         print("\n[4/4] 正在为网格生成纹理...")
         cmd_texture = [
             str(self._openmvs_binDir / "TextureMesh"),
-            "--input-file", str(self._mesh_file),
+            "--input-file", str(self._sceneDenseMvs_file),
+            "--mesh-file",  str(self._sceneDenseMesh_file), 
             "--working-folder", str(self._mvsWorkspace),
-            # 可选：导出为 obj 格式
-            "--export-type", "obj" 
+            # 可选：导出为 glb /obj 格式
+            "--export-type", "glb" ,
+            "--output-file", str(self._scene_dense_mesh_textured_file),
+            "--max-threads", "4" , # 降低线程数（从20→8，减少内存占用）
+            "--cuda-device", "-2",  # 禁用GPU，改用CPU（核心修复）
+            "--resolution-level", "1",  # 图像缩放到1/2（降低纹理计算量）
+            "--min-resolution", "320",  # 降低最小分辨率阈值
+            "--max-texture-size", "2048",  # 降低最大纹理尺寸（从4096→2048）
+            "--sharpness-weight", "0.5",  # 降低锐化（减少计算复杂度）
+            "--outlier-threshold", "0.1",
+            "--cost-smoothness-ratio", "1.0",  # 降低平滑度权重（减少计算）
+            "--close-holes", "30",  # 降低孔洞修复阈值（减少计算）
+            "--decimate", "1.0",  # 保持原始网格比例（无下采样）
+            "--virtual-face-images", "0",  # 降低虚拟面数量（从3→2）
+            "--global-seam-leveling", "0",  # 关闭全局接缝平整（减少计算）
+            "--local-seam-leveling", "0",  # 关闭局部接缝平整（减少计算）
+            "-v", "2"  # 降低日志详细度（减少内存输出）
+
         ]
         run_command(cmd_texture, self._mvsWorkspace)
 

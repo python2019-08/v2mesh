@@ -5,7 +5,7 @@
 
 from s01x01extract_frames import extractVideoFrames
 
-from s01x02deblur import deblur
+from s01x02process_image import deblur,process_Images
 
 import s02sfm as sfm
 
@@ -18,7 +18,7 @@ from pathlib import Path
 if __name__ == "__main__":
     # 获取项目根目录 (假定此脚本位于 code/ 目录下)
     # project_root = Path(__file__).resolve().parent.parent
-    project_rootPathStr = "/home/abner/Documents/jobs/task/task-blender/task03ai0img0modeling/"
+    project_rootPathStr = "/home/abner/Documents/jobs/task/blender/task03v2mesh/"
     print(project_rootPathStr)
     project_root = Path(project_rootPathStr).resolve()
 
@@ -26,13 +26,13 @@ if __name__ == "__main__":
         print(f"错误：项目根目录未找到于 {project_root}")
         exit(1)
     # v2m : video to mesh
-    dat_rootPathStr = "/0v2m"
+    dat_rootPathStr = "/home/abner/1v2m"
     dat_root = Path(dat_rootPathStr).resolve()
 
     # ----------------------------------------
     # 控制是否跳过每个步骤，方便调试和分阶段运行  False  True
     isSkip_extractVideoFrames = True
-    isSkip_deblur = True
+    isSkip_process_Images = True
 
     isSkip_sfm1featureExtract = True
     isSkip_sfm2featureMatching = True
@@ -41,8 +41,8 @@ if __name__ == "__main__":
  
     isSkip_step1_makeMvs = True
     isSkip_step2x1_makeDmap = True
-    isSkip_step2x2_densifyPointCloud = False
-    isSkip_step3_reconstructMesh = False
+    isSkip_step2x2_densifyPointCloud = True
+    isSkip_step3_reconstructMesh = True
     isSkip_step4_textureMesh = False
 
     isSkip_optimize_texture = True
@@ -55,8 +55,8 @@ if __name__ == "__main__":
  
     # ----------------------------------------
     # 调用函数进行去模糊处理
-    if not isSkip_deblur:
-        deblur(dat_root)
+    if not isSkip_process_Images:
+        process_Images(dat_root)
 
     # ----------------------------------------
     # 调用函数进行SFM重建
