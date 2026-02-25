@@ -12,15 +12,89 @@ compilation terminated.
 ### 核心需求理解
 你在编译OpenMVS的Viewer模块时，编译器提示找不到`glad/glad.h`头文件，这是因为glad的头文件路径未被正确添加到Viewer模块的编译包含目录中，导致编译器无法定位到该头文件。需要修正CMake配置，确保Viewer模块能识别glad的头文件路径。
   
-#### 步骤2：重新生成完整的glad代码（若缺失）
+#### 步骤1：重新生成完整的glad代码 
 如果`glad.h`缺失，重新生成glad（确保包含核心头文件）：
 
 <!-- https://github.com/Dav1dde/glad?tab=readme-ov-file -->
 
 glad1 generator:   https://glad.dav1d.de/
 
+##### 步骤2：3rd/openMVS/3rd/glad/CMakeLists.txt
+```sh
+CMAKE_MINIMUM_REQUIRED(VERSION 3.18)
+
+PROJECT(OpenMVS LANGUAGES C)
+
+# 配置编译选项
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+if(CMAKE_CROSSCOMPILING)
+  message(STATUS "Cross-compiling: "
+    "${CMAKE_HOST_SYSTEM_NAME}/${CMAKE_HOST_SYSTEM_PROCESSOR} -> "
+    "${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}")
+else()
+  message(STATUS "**NOT** Cross-compiling: "
+    "${CMAKE_HOST_SYSTEM_NAME}/${CMAKE_HOST_SYSTEM_PROCESSOR} -> "
+    "${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}")    
+endif()
+
+# ----------------------------------------------------
+include(GNUInstallDirs)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+
+# ----------------------------------------------------
+set(CUDA_ENABLED OFF)
+# 手动指定glad的头文件和源码路径
+MESSAGE(STATUS "glad-path==${CMAKE_SOURCE_DIR}")
+set(GLAD_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
+set(GLAD_SRC "${CMAKE_SOURCE_DIR}/src/glad.c")
+
+# 生成glad静态库
+add_library(glad STATIC ${GLAD_SRC})
+target_include_directories(glad PUBLIC ${GLAD_INCLUDE_DIR})
+```
+
 ##### 步骤3：修正Viewer模块的CMake配置（强制添加glad包含路径）
 编辑`3rd/openMVS/apps/Viewer/CMakeLists.txt`，在glad配置后**手动添加glad的包含路径到Viewer目标**（兜底保障）：
+```sh
+set(CUDA_ENABLED OFF)
+# 1. 指定已编译好的glad库路径（关键：指向单独编译的libglad.a）
+MESSAGE(STATUS "glad-path==${CMAKE_SOURCE_DIR}/3rd/glad")
+set(GLAD_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/3rd/glad/include") 
+set(GLAD_LIB "${CMAKE_SOURCE_DIR}/3rd/glad/build/lib/libglad.a")
+# 2. 验证库文件是否存在（避免链接错误）
+if(NOT EXISTS ${GLAD_LIB})
+    message(FATAL_ERROR "Precompiled glad library not found at: ${GLAD_LIB}")
+endif()
+# 3. 创建IMPORTED目标（链接外部已编译的glad库）
+add_library(glad::glad STATIC IMPORTED GLOBAL)
+# 指定已编译的库文件路径
+set_target_properties(glad::glad PROPERTIES
+    IMPORTED_LOCATION "${GLAD_LIB}"
+    INTERFACE_INCLUDE_DIRECTORIES "${GLAD_INCLUDE_DIR}"  # 传递头文件路径
+    LINKER_LANGUAGE C  # 强制C语言链接
+    CUDA_RESOLVE_DEVICE_SYMBOLS OFF  # 彻底禁用CUDA
+    CUDA_ARCHITECTURES ""
+)
+# 4. 标记glad已找到，兼容原有逻辑
+set(glad_FOUND TRUE)
+MESSAGE(STATUS "GLAD (precompiled static lib) found: ${GLAD_LIB}")
+# Find required packages
+# FIND_PACKAGE(glad QUIET)
+if(glad_FOUND)
+	MESSAGE(STATUS "GLAD ${glad_VERSION} found")
+else()
+	MESSAGE("-- Can't find GLAD. Continuing without it.")
+	RETURN()
+endif()
+```
+
+<!-- 
+
 ```cmake
 # 原有glad配置（保留）
 set(GLAD_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/3rd/glad/include")
@@ -39,6 +113,31 @@ FIND_PACKAGE(GLFW3 QUIET)
 # 找到Viewer目标的定义处（通常是cxx_executable_with_flags），确保链接glad::glad
 # 示例：如果Viewer目标是这样定义的，确保链接glad
 # cxx_executable_with_flags(Viewer "Apps" ${SOURCE_FILES} ${LINK_LIBRARIES} glad::glad)
+``` 
+-->
+
+##### 步骤4：编译glad
+
+3rd/openMVS/3rd/glad/build-glad.sh的内容
+```sh
+# 3rd/openMVS/3rd/glad/build-glad.sh
+BuildDIR_lib=build     
+CMAKE_BUILD_TYPE=Release
+cmake -S. -B ${BuildDIR_lib} \
+        -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install_zstd  \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}   \
+        -DBUILD_SHARED_LIBS=OFF     \
+        -DCMAKE_C_FLAGS="-fPIC" \
+        -DCMAKE_CXX_FLAGS="-fPIC" 
+
+echo "-------------------------"
+cmake --build ${BuildDIR_lib} -j$(nproc)  -v
+```
+
+```sh
+cd 3rd/openMVS/3rd/glad/
+./build-glad.sh
 ```
 
 ##### 步骤4：清理缓存并重新编译

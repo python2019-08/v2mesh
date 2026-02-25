@@ -115,7 +115,7 @@ class DenseReconstruction:
             exit(-1012)                         
 
     # =====================================
-    def step2x1_makeDmap(self):
+    def step2_densifyPointCloud(self):
         """
         生成 *.dmap 
         """ 
@@ -127,7 +127,7 @@ class DenseReconstruction:
         # 这是 MVS 的核心步骤，计算量非常大。
         # 它会为场景生成一个密集的 3D 点云。
         if True :        
-            print("\n[2.1/4] 正在生成dmap ...")
+            print("\n[2/4] 正在生成dmap 和 稠密点云...")
 
             cmd_createDmap = [
                 str(self._openmvs_binDir / "DensifyPointCloud"),
@@ -155,14 +155,14 @@ class DenseReconstruction:
   
     # =========================================
 
-    def step2x2_densifyPointCloud(self):
-        """
-        既然 .dmap 文件已经生成在 mvs_ws 目录中，稠密重建最耗时的“计算”阶段已经完成了。
-        """    
-        print("step2x2_densifyPointCloud().....................") 
-        self.check_mvsWorkspace()   
+    # def step2x2_densifyPointCloud(self):
+    #     """
+    #     既然 .dmap 文件已经生成在 mvs_ws 目录中，稠密重建最耗时的“计算”阶段已经完成了。
+    #     """    
+    #     print("step2x2_densifyPointCloud().....................") 
+    #     self.check_mvsWorkspace()   
 
-        self.check_sceneMvs_file()           
+    #     self.check_sceneMvs_file()           
         # 2. 稠密点云重建 (DensifyPointCloud)
         # ------------------------------------
         # 这是 MVS 的核心步骤，计算量非常大。

@@ -26,7 +26,7 @@ if __name__ == "__main__":
         print(f"错误：项目根目录未找到于 {project_root}")
         exit(1)
     # v2m : video to mesh
-    dat_rootPathStr = "/home/abner/1v2m"
+    dat_rootPathStr = "/home/abner/4v2m"
     dat_root = Path(dat_rootPathStr).resolve()
 
     # ----------------------------------------
@@ -40,8 +40,7 @@ if __name__ == "__main__":
     isSkip_sfm4undistort_images = True
  
     isSkip_step1_makeMvs = True
-    isSkip_step2x1_makeDmap = True
-    isSkip_step2x2_densifyPointCloud = True
+    isSkip_step2_densifyPointCloud = True 
     isSkip_step3_reconstructMesh = True
     isSkip_step4_textureMesh = False
 
@@ -78,11 +77,8 @@ if __name__ == "__main__":
     if not isSkip_step1_makeMvs:
         drObj.step1_makeMvs( )
 
-    if not isSkip_step2x1_makeDmap:
-        drObj.step2x1_makeDmap( )
-
-    # if not isSkip_step2x2_densifyPointCloud:
-    #     drObj.step2x2_densifyPointCloud(  )
+    if not isSkip_step2_densifyPointCloud:
+        drObj.step2_densifyPointCloud( ) 
 
     if not isSkip_step3_reconstructMesh:
         drObj.step3_reconstructMesh( )

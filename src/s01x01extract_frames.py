@@ -59,7 +59,7 @@ def extractVideoFrames(aDatRoot: Path):
     command = [
         "ffmpeg",
         "-i", str(input_video), 
-        "-r", "5", 
+        "-r", "4", 
         f"{output_dir}/frame_%04d.jpg"
     ]
 
