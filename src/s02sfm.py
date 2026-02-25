@@ -2,6 +2,8 @@ import shutil
 from pathlib import Path
 import pycolmap
 
+#  https://pypi.org/project/pycolmap/
+# 
 #  从运动恢复结构（Structure from Motion, SfM），它主要包含三个步骤：
 # 
 # 特征提取 (Feature Extraction)：在每张图像中检测独特的特征点（例如，使用 SIFT 算法）。
@@ -44,6 +46,8 @@ def sfm1_featureExtraction(dat_root: Path):
 
     # 1. 特征提取 (Feature Extraction)
     # ------------------------------------
+    # https://pypi.org/project/pycolmap/
+    # 
     # 这一步会为每张图片提取 SIFT 特征，并将它们存储在 SQLite 数据库中。
     # pycolmap.extract_features 会自动创建数据库文件。
     print("\n[1/4] 正在提取特征...")
