@@ -6,6 +6,7 @@
 ### 1. 官方 GitHub 示例（最推荐）
 官方仓库的 scripts/ 文件夹包含了最权威的调用范例：
 pycolmap/scripts/python：涵盖了从特征提取到增量重建的全流程脚本。
+
 ### 2. Python 内置 help() 或 dir()
 由于是动态绑定的，直接在终端查看对象属性是最快的方法：
 ```python

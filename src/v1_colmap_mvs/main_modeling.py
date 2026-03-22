@@ -18,38 +18,45 @@ from pathlib import Path
 if __name__ == "__main__":
     # 获取项目根目录 (假定此脚本位于 code/ 目录下)
     # project_root = Path(__file__).resolve().parent.parent
+    # input parameters (1/3)
     project_rootPathStr = "/home/abner/Documents/jobs/task/blender/task03v2mesh/"
     print(project_rootPathStr)
     project_root = Path(project_rootPathStr).resolve()
-
     if not project_root.is_dir():
         print(f"错误：项目根目录未找到于 {project_root}")
         exit(1)
+
+
     # v2m : video to mesh
-    dat_rootPathStr = "/home/abner/4v2m"
+    # ----input parameters (2/3)
+    dat_rootPathStr = "/home/abner/0m/my03"
     dat_root = Path(dat_rootPathStr).resolve()
 
+    # ----input parameters (3/3)
+    # video_relativePath = "m.mov" ## "20260118-143016.mov"
+    video_relativePath = "v.mp4"     
     # ----------------------------------------
     # 控制是否跳过每个步骤，方便调试和分阶段运行  False  True
-    isSkip_extractVideoFrames = True
-    isSkip_process_Images = True
+    isSkip_extractVideoFrames = False
+    isSkip_process_Images = False
 
-    isSkip_sfm1featureExtract = True
-    isSkip_sfm2featureMatching = True
-    isSkip_sfm3sparseReconstruct = True
-    isSkip_sfm4undistort_images = True
+    isSkip_sfm1featureExtract = False
+    isSkip_sfm2featureMatching = False
+    isSkip_sfm3sparseReconstruct = False
+    isSkip_sfm4undistort_images = False
  
-    isSkip_step1_makeMvs = True
-    isSkip_step2_densifyPointCloud = True 
-    isSkip_step3_reconstructMesh = True
-    isSkip_step4_textureMesh = False
+    isSkip_step1_makeMvs = False
+    isSkip_step2_densifyPointCloud = False 
+    isSkip_step3_reconstructMesh = False
+    # isSkip_step4_refineMesh  = True
+    isSkip_step5_textureMesh = False
 
     isSkip_optimize_texture = True
 
     # ----------------------------------------
     # 调用函数提取关键帧    
     if not isSkip_extractVideoFrames:
-        extractVideoFrames(dat_root)
+        extractVideoFrames(dat_root, video_relativePath)
         # extractFrames2(project_root)
  
     # ----------------------------------------
@@ -57,6 +64,7 @@ if __name__ == "__main__":
     if not isSkip_process_Images:
         process_Images(dat_root)
 
+ 
     # ----------------------------------------
     # 调用函数进行SFM重建
     if not isSkip_sfm1featureExtract:
@@ -83,8 +91,11 @@ if __name__ == "__main__":
     if not isSkip_step3_reconstructMesh:
         drObj.step3_reconstructMesh( )
 
-    if not isSkip_step4_textureMesh:
-        drObj.step4_textureMesh( )
+    # if not isSkip_step4_refineMesh :
+    #     drObj.step4_RefineMesh()
+
+    if not isSkip_step5_textureMesh:
+        drObj.step5_textureMesh( )
 
     # ----------------------------------------
     # 调用函数进行纹理优化

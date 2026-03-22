@@ -13,7 +13,11 @@ def run_command(command, cwd):
     """
     print(f"\n[执行命令] {' '.join(command)}")
     try:
-        process = subprocess.Popen(command, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+        process = subprocess.Popen(command, cwd=cwd, 
+                                   stdout=subprocess.PIPE, 
+                                   stderr=subprocess.STDOUT, 
+                                   text=True, 
+                                   bufsize=1)
         for line in iter(process.stdout.readline, ''):
             print(line, end='')
         process.wait()

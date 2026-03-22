@@ -6,15 +6,13 @@ from pathlib import Path
 
 
 
-def extractVideoFrames(aDatRoot: Path):
+def extractVideoFrames(aDatRoot: Path, aVideoRelativePath: str):
     """
     从视频文件中提取帧。
     """
     # --- 配置 ---
-    # 输入视频文件路径 (相对于项目根目录)
-    # input_video_rel = "e01.mp4"   #"20260118-143016.mov"
-    input_video_rel = "20260118-143016.mov"
-    input_video = aDatRoot / input_video_rel
+    # 输入视频文件路径 (相对于项目根目录) 
+    input_video = aDatRoot / aVideoRelativePath
 
     # 输出关键帧的目录 (相对于项目根目录)
     # output_dir_rel = "frames_0"
@@ -59,12 +57,12 @@ def extractVideoFrames(aDatRoot: Path):
     command = [
         "ffmpeg",
         "-i", str(input_video), 
-        "-r", "4", 
+        "-r", "5", 
         f"{output_dir}/frame_%04d.jpg"
     ]
 
     # 执行 FFmpeg 命令
-    print(f"正在从 {input_video_rel} 提取帧...")
+    print(f"正在从 {input_video} 提取帧...")
     try:
         subprocess.run(command, check=True)
         print(f"关键帧提取完成。文件已保存至 {output_dir_rel}")

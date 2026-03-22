@@ -222,12 +222,13 @@ def processImages(inputDirPath, outputDirPath):
 def process_Images( aDatRoot : Path):
     # 输入目录 (包含关键帧)
     input_dir = aDatRoot / "frames"
-    # 输出目录 (存放清晰的帧)
-    output_dir = aDatRoot / "frames_sharp0"
-    processImages( input_dir, output_dir)
+
+    # 读取→旋转→增强→保存
+    # output_dir = aDatRoot / "frames_sharp0"
+    # processImages( input_dir, output_dir)
 
     #  
-    deblur_input_dir = aDatRoot / "frames_sharp0"     
+    deblur_input_dir = aDatRoot / "frames"     
     deblur_output_dir = aDatRoot / "frames_sharp"
     deblur(deblur_input_dir, deblur_output_dir)
 

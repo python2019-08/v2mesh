@@ -1,6 +1,5 @@
 {
     "cmake.sourceDirectory": "/home/abner/Documents/jobs/task/task-blender/task03ai0img0modeling/3rd/openMVG--/src",
     "python-envs.defaultEnvManager": "ms-python.python:conda",
-    "python-envs.defaultPackageManager": "ms-python.python:conda",
-    "python-envs.pythonProjects": []
+    "python-envs.defaultPackageManager": "ms-python.python:conda"
 }

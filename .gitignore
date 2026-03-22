@@ -1,8 +1,23 @@
 3rd/
+
+3dgs/
+# 3dgs/3DGS-to-PC
+# 3dgs/gsplat
+# 3dgs/ml-sharp
+# 3dgs/nerfstudio
+
+
 dat/*.mov
 dat/*.mp4
 
 src/__pycache__/
+src/v1_colmap_mvs/__pycache__/
+src/v2_colmap_3dgs/__pycache__/
+tools/check_camera_info/__pycache__/
+tools/pycolmap_doc/__pycache__/
+
+
 t1.txt
 t2.txt
 tmp*
+

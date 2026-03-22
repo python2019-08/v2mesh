@@ -63,7 +63,9 @@ def sfm1_featureExtraction(dat_root: Path):
         # 1244張圖如果不限制，數據庫會輕鬆破 20GB
         # For pycolmap 3.13+, we must use FeatureExtractionOptions
         extraction_options = pycolmap.FeatureExtractionOptions()
-        extraction_options.sift.max_num_features = 4096  # 關鍵：限制每張圖的特徵點數量
+        extraction_options.sift.max_num_features = 8192  # 4096,關鍵：限制每張圖的特徵點數量
+        extraction_options.sift.edge_threshold = 10  # 默認為 10，建議根據需要調整
+        extraction_options.use_gpu = False
     
 
         # PINHOLE 模型不包含畸变参数。如果你的手机视频畸变很大，用 PINHOLE 会导致特征点对不齐，重投影误差极高，从而无法通过初始化的质量校验。
@@ -121,14 +123,14 @@ def sfm2_featureMatching(project_root : Path,dat_root: Path):
     try:       
         # 不要用 exhaustive_matching，改用 match_sequential        
         # pycolmap.match_exhaustive(database_path, matching_options=matching_options)
-        
-        # 匹配器选项，用于设置重叠数量
-        # overlap=20 表示每張圖只和前後20張匹配，這對 10米路面視頻最完美
+ 
         matching_options = pycolmap.FeatureMatchingOptions()
-        matching_options.use_gpu = True 
-
+        matching_options.use_gpu = False 
+ 
+        # 匹配器选项，用于设置重叠数量    
+        # overlap=20 表示每張圖只和前後20張匹配，這對 10米路面視頻最完美
         pairing_options= pycolmap.SequentialPairingOptions() 
-        pairing_options.overlap = 20  
+        pairing_options.overlap = 10  
         pairing_options.loop_detection = True # 关键：开启回环检测，增强匹配稳定性
 
         # 关键：手动指定词汇树的路径，避免自动下载失败
@@ -139,7 +141,8 @@ def sfm2_featureMatching(project_root : Path,dat_root: Path):
         pycolmap.match_sequential(database_path, 
                                   matching_options = matching_options, 
                                   pairing_options  = pairing_options, 
-                                  device=pycolmap.Device.auto) 
+                                  device=pycolmap.Device.cpu) 
+
         print("特征匹配完成。")
     except Exception as e:
         print(f"特征匹配过程中发生错误: {e}")
@@ -204,7 +207,7 @@ def sfm3_sparseReconstruct(dat_root: Path):
         # 3. 可选：如果你觉得畸变参数也被带跑了，也可以关掉
         pipeline_options.ba_refine_extra_params = False        
         # pipe_opts.triangulation：对应 IncrementalTriangulatorOptions，控制 3D 点生成的质量要求。
-
+        pipeline_options.ba_use_gpu = False
 
 
         # `incremental_mapping` 函数需要一个输出目录来存放模型。
@@ -244,28 +247,28 @@ def sfm3_sparseReconstruct(dat_root: Path):
     print(f"\nSfM 流程完成。稀疏重建结果已保存至: {sparse_dir}")
 
 # -------------------------------------------------------------
-# def sfm4_undistort_images(dat_root: Path):
+def sfm4_undistort_images_0(dat_root: Path):
 
-#     # COLMAP 工作区目录，用于存放数据库和重建结果
-#     colmap_workspace = dat_root / "colmap_workspace"
+    # COLMAP 工作区目录，用于存放数据库和重建结果
+    colmap_workspace = dat_root / "colmap_workspace"
 
-#     image_path  = dat_root / "frames_sharp"
-#     input_path  = colmap_workspace / Path("sparse/0")
+    image_path  = dat_root / "frames_sharp"
+    input_path  = colmap_workspace / Path("sparse/0")
     
 
-#     output_path = colmap_workspace / Path("sparse_undistort")
-#     output_path.mkdir(exist_ok=True)
+    output_path = colmap_workspace / Path("sparse_undistort")
+    output_path.mkdir(exist_ok=True)
 
  
-#     # 自动进行去畸变导出
-#     # 这会生成可以直接给 OpenMVS 使用的 .mvs 或 colmap 格式文件
-#     print("\n[4/4] 正在运行去畸变导出...")
-#     pycolmap.undistort_images(
-#         output_path= output_path,
-#         input_path = input_path, # 传入刚才取出的第一个模型
-#         image_path = image_path,
-#         output_type="COLMAP"
-#     )    
+    # 自动进行去畸变导出
+    # 这会生成可以直接给 OpenMVS 使用的 .mvs 或 colmap 格式文件
+    print("\n[4/4] 正在运行去畸变导出...")
+    pycolmap.undistort_images(
+        output_path= output_path,
+        input_path = input_path, # 传入刚才取出的第一个模型
+        image_path = image_path,
+        output_type="COLMAP"
+    )    
 # -------------------------------------------------------------
 
 def sfm4_undistort_images(dat_root: Path):
