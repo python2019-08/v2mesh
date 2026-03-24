@@ -56,7 +56,7 @@ def sfm1_featureExtraction(dat_root: Path):
         reader_options.camera_model = "SIMPLE_RADIAL" 
         # 核心：1200是估算的像素焦距，960/540是主点，0是初始畸变
         # 1080p 的标准焦距约在 1200-1500 之间
-        reader_options.camera_params = "1200, 960, 540, 0" 
+        # reader_options.camera_params = "1200, 960, 540, 0" 
         # 告诉 COLMAP 初始参数是准确的，不需要它乱猜
         # reader_options.prior_focal_length = True 
 

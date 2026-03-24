@@ -29,12 +29,12 @@ if __name__ == "__main__":
 
     # v2m : video to mesh
     # ----input parameters (2/3)
-    dat_rootPathStr = "/home/abner/0m/my03"
+    dat_rootPathStr = "/home/abner/0m/my04playground"
     dat_root = Path(dat_rootPathStr).resolve()
 
     # ----input parameters (3/3)
     # video_relativePath = "m.mov" ## "20260118-143016.mov"
-    video_relativePath = "v.mp4"     
+    video_relativePath = "playgr.mp4"     
     # ----------------------------------------
     # 控制是否跳过每个步骤，方便调试和分阶段运行  False  True
     isSkip_extractVideoFrames = False

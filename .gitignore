@@ -1,10 +1,21 @@
-3rd/
+# 3rd/
+3rd/colmap
+3rd/eigen
+3rd/mve
+3rd/mvs-texturing
+3rd/nanoflann
+3rd/opencv
+3rd/openMVG
+3rd/openMVS
+3rd/openMVS_sample
 
-3dgs/
-# 3dgs/3DGS-to-PC
-# 3dgs/gsplat
-# 3dgs/ml-sharp
-# 3dgs/nerfstudio
+
+# 3dgs/
+3dgs/3DGS-to-PC
+3dgs/gsplat
+3dgs/ml-sharp
+3dgs/nerfstudio
+3dgs/supersplat
 
 
 dat/*.mov
